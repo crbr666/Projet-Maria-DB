@@ -2,12 +2,9 @@
 # *****************************************************************
 # ========== Automatisation et sécurisation de MariaDB ==========
 # description:
-# ce script permet d'installer et de sécuriser MariaDB,
-# de créer une base de données,
-# de créer un login et un mot de passe,
-# de créer un utilisateur associé au login,
-# d'activer le service au démarrage et
-# de journaliser les étapes
+# VERSION DÉMONSTRATION — les commandes sensibles sont remplacées
+# par des echo affichant ce que la commande aurait exécuté.
+# Aucune modification n'est apportée au système.
 # -----------------------------------------------------------------
 # 2026-06-18 - V0.1
 # Auteur : Chavagnat Adrien
@@ -66,7 +63,7 @@ echo "=============================================" >> "$LOG"
 echo " Début de l'installation — $(date '+%Y-%m-%d %H:%M:%S')" >> "$LOG"
 echo "=============================================" >> "$LOG"
 
-echo "=== Installation de MariaDB en cours... ==="
+echo "=== [DEMO] Installation de MariaDB en cours... ==="
 echo ""
 
 # --- Vérification si MariaDB est déjà installé ---
@@ -78,73 +75,65 @@ fi
 
 # --- Étape 1 : Mise à jour de la liste des paquets ---
 echo "[1/9] Mise à jour de la liste des paquets..."
-$PKG_UPDATE >> "$LOG" 2>> "$LOG" || quitter "Échec de la mise à jour de la liste des paquets"
+echo "  > COMMANDE : $PKG_UPDATE"
 log_ok "Mise à jour de la liste des paquets réussie"
 
 # --- Étape 2 : Installation de MariaDB Server ---
 echo "[2/9] Installation de MariaDB Server..."
-$PKG_INSTALL $MARIADB_PKG >> "$LOG" 2>> "$LOG" || quitter "Échec de l'installation de MariaDB"
+echo "  > COMMANDE : $PKG_INSTALL $MARIADB_PKG"
 log_ok "Installation de MariaDB réussie"
 
 # --- Étape 3 : Mise à jour des dépendances ---
 echo "[3/9] Mise à jour des dépendances..."
-$PKG_UPGRADE >> "$LOG" 2>> "$LOG" || quitter "Échec de la mise à jour des dépendances"
+echo "  > COMMANDE : $PKG_UPGRADE"
 log_ok "Mise à jour des dépendances réussie"
 
 # --- Étape 4 : Démarrage du service MariaDB ---
 echo "[4/9] Démarrage du service MariaDB..."
-$SERVICE_START $MARIADB_SERVICE >> "$LOG" 2>> "$LOG" || quitter "Échec du démarrage du service MariaDB"
+echo "  > COMMANDE : $SERVICE_START $MARIADB_SERVICE"
 log_ok "Service MariaDB démarré"
 
 # --- Étape 5 : Activation de MariaDB au démarrage du système ---
 echo "[5/9] Activation de MariaDB au démarrage..."
-$SERVICE_ENABLE $MARIADB_SERVICE >> "$LOG" 2>> "$LOG" || quitter "Échec de l'activation de MariaDB au démarrage"
+echo "  > COMMANDE : $SERVICE_ENABLE $MARIADB_SERVICE"
 log_ok "MariaDB activé au démarrage du système"
 
 # --- Étape 6 : Sécurisation de MariaDB ---
 echo "[6/9] Sécurisation de MariaDB..."
-mysql -u root >> "$LOG" 2>> "$LOG" << EOF || quitter "Échec de la sécurisation de MariaDB"
-ALTER USER 'root'@'localhost' IDENTIFIED BY '$ROOT_PASSWORD';
-DELETE FROM mysql.user WHERE User='';
-DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
-DROP DATABASE IF EXISTS test;
-DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
-FLUSH PRIVILEGES;
-EOF
+echo "  > REQUÊTE SQL : ALTER USER 'root'@'localhost' IDENTIFIED BY '***';"
+echo "  > REQUÊTE SQL : DELETE FROM mysql.user WHERE User='';"
+echo "  > REQUÊTE SQL : DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
+echo "  > REQUÊTE SQL : DROP DATABASE IF EXISTS test;"
+echo "  > REQUÊTE SQL : DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%';"
+echo "  > REQUÊTE SQL : FLUSH PRIVILEGES;"
 log_ok "Sécurisation réussie : mot de passe root défini, utilisateurs anonymes supprimés, connexion root distante désactivée, base test supprimée, privilèges rechargés"
 
 # --- Étape 7 : Création de la base de données ---
 echo "[7/9] Création de la base de données '$DB_NAME'..."
-mysql -u root -p"$ROOT_PASSWORD" >> "$LOG" 2>> "$LOG" << EOF || quitter "Échec de la création de la base de données '$DB_NAME'"
-CREATE DATABASE IF NOT EXISTS \`$DB_NAME\`;
-EOF
+echo "  > REQUÊTE SQL : CREATE DATABASE IF NOT EXISTS \`$DB_NAME\`;"
 log_ok "Base de données '$DB_NAME' créée"
 
-# --- Étapes 8 & 9 : Création de l'utilisateur ---
+# --- Étape 8 & 9 : Création de l'utilisateur ---
 echo "[8/9] Création de l'utilisateur '$DB_USER'..."
-mysql -u root -p"$ROOT_PASSWORD" >> "$LOG" 2>> "$LOG" << EOF || quitter "Échec de la création de l'utilisateur '$DB_USER'"
-CREATE USER IF NOT EXISTS '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASSWORD';
-EOF
+echo "  > REQUÊTE SQL : CREATE USER IF NOT EXISTS '$DB_USER'@'localhost' IDENTIFIED BY '***';"
 log_ok "Utilisateur '$DB_USER' créé"
 
 # --- Étapes 10 & 11 : Attribution des droits et rechargement des privilèges ---
 echo "[9/9] Attribution des droits à '$DB_USER' sur '$DB_NAME'..."
-mysql -u root -p"$ROOT_PASSWORD" >> "$LOG" 2>> "$LOG" << EOF || quitter "Échec de l'attribution des droits à '$DB_USER'"
-GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'localhost';
-FLUSH PRIVILEGES;
-EOF
+echo "  > REQUÊTE SQL : GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'localhost';"
+echo "  > REQUÊTE SQL : FLUSH PRIVILEGES;"
 log_ok "Droits accordés à '$DB_USER' sur la base '$DB_NAME' — Privilèges rechargés"
 
-# --- Étape 12 : Redémarrage de MariaDB ---
+# --- Redémarrage de MariaDB ---
 echo ""
 echo "Redémarrage du service MariaDB..."
-$SERVICE_RESTART $MARIADB_SERVICE >> "$LOG" 2>> "$LOG" || quitter "Échec du redémarrage de MariaDB"
+echo "  > COMMANDE : $SERVICE_RESTART $MARIADB_SERVICE"
 log_ok "Service MariaDB redémarré"
 
-# --- Étape 13 : Affichage du statut ---
+# --- Affichage du statut ---
 echo ""
 echo "--- Statut du service MariaDB ---"
-$SERVICE_STATUS $MARIADB_SERVICE --no-pager
+echo "  > COMMANDE : $SERVICE_STATUS $MARIADB_SERVICE --no-pager"
 echo ""
 
 # --- Fin du log ---
@@ -152,9 +141,9 @@ echo "=============================================" >> "$LOG"
 echo " Installation terminée — $(date '+%Y-%m-%d %H:%M:%S')" >> "$LOG"
 echo "=============================================" >> "$LOG"
 
-# --- Étape 14 : Message de fin ---
+# --- Message de fin ---
 echo "============================================="
-echo " Installation terminée avec succès !"
+echo " [DEMO] Installation simulée avec succès !"
 echo "  Base de données : $DB_NAME"
 echo "  Utilisateur     : $DB_USER"
 echo "  Fichier log     : $LOG"
