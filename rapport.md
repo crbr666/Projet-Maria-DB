@@ -670,25 +670,399 @@ Les prochains tests déterminent la conformité du livrable par rapport aux exig
 
 `sudo ./install_mariadb.sh`
 
+**Resultat des tests**
+*sans paramètres*
+```
+achav@debian:~$ ./install_mariadb.sh
+Usage : sudo ./install_mariadb.sh <root_password> <db_name> <username> <user_password> <log_file>
+Exemple : sudo ./install_mariadb.sh "Root123!" "app_interne" "app_user" "User123!" "install_mariadb.log"
+```
+
+*avec paramètres*
+```
+achav@debian:~$ sudo ./install_mariadb.sh "Root123!" "app_interne" "app_user" "User123!" "install_mariadb.log"
+[sudo] Mot de passe de achav :
+=== Installation de MariaDB en cours... ===
+
+[1/9] Mise à jour de la liste des paquets...
+[2/9] Installation de MariaDB Server...
+[3/9] Mise à jour des dépendances...
+[4/9] Démarrage du service MariaDB...
+[5/9] Activation de MariaDB au démarrage...
+[6/9] Sécurisation de MariaDB...
+[7/9] Création de la base de données 'app_interne'...
+[8/9] Création de l'utilisateur 'app_user'...
+[9/9] Attribution des droits à 'app_user' sur 'app_interne'...
+
+Redémarrage du service MariaDB...
+
+--- Statut du service MariaDB ---
+● mariadb.service - MariaDB 11.8.6 database server
+     Loaded: loaded (/usr/lib/systemd/system/mariadb.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-06-19 13:56:44 CEST; 34ms ago
+ Invocation: 908bfa22d40f42819bc51e9da243b220
+       Docs: man:mariadbd(8)
+             https://mariadb.com/kb/en/library/systemd/
+    Process: 6020 ExecStartPre=/bin/sh -c [ ! -e /usr/bin/galera_recovery ] && VAR= ||   VAR=`/usr/bin/galera_recovery`; [ $? -eq 0 ]   && echo _WSREP_START_POSITION=$VAR > /run/mysqld/wsrep-start-position || exit 1 (code=exited, status=0/SUCCESS)
+    Process: 6087 ExecStartPost=/bin/rm -f /run/mysqld/wsrep-start-position /run/mysqld/wsrep-new-cluster (code=exited, status=0/SUCCESS)
+    Process: 6089 ExecStartPost=/etc/mysql/debian-start (code=exited, status=0/SUCCESS)
+   Main PID: 6074 (mariadbd)
+     Status: "Taking your SQL requests now..."
+      Tasks: 19 (limit: 30483)
+     Memory: 125M (peak: 126.3M)
+        CPU: 678ms
+     CGroup: /system.slice/mariadb.service
+             ├─6074 /usr/sbin/mariadbd
+             ├─6090 /bin/bash /etc/mysql/debian-start
+             ├─6093 /usr/bin/mariadb-upgrade --defaults-extra-f…
+             ├─6095 grep -E -v "^(1|@had|ERROR (1051|1054|1060|…
+             ├─6096 logger -p daemon warn -i -t/etc/mysql/debia…
+             ├─6099 sh -c -- "'/usr/bin/mariadb' --defaults-fil…
+             └─6100 /usr/bin/mariadb --defaults-file=/tmp/mysql…
+
+jun 19 13:56:43 debian mariadbd[6074]: 2026-06-19 13:56:43 0 …d.
+jun 19 13:56:43 debian mariadbd[6074]: 2026-06-19 13:56:43 0 …d.
+jun 19 13:56:43 debian mariadbd[6074]: 2026-06-19 13:56:43 0 …ol
+jun 19 13:56:43 debian mariadbd[6074]: 2026-06-19 13:56:43 0 …43
+jun 19 13:56:43 debian mariadbd[6074]: 2026-06-19 13:56:43 0 …'.
+jun 19 13:56:43 debian mariadbd[6074]: 2026-06-19 13:56:43 0 …ts
+jun 19 13:56:43 debian mariadbd[6074]: 2026-06-19 13:56:43 0 …s.
+jun 19 13:56:43 debian mariadbd[6074]: Version: '11.8.6-Maria…er
+jun 19 13:56:44 debian systemd[1]: Started mariadb.service -…er.
+jun 19 13:56:44 debian /etc/mysql/debian-start[6091]: Upgradin….
+Hint: Some lines were ellipsized, use -l to show in full.
+
+=============================================
+ Installation terminée avec succès !
+  Base de données : app_interne
+  Utilisateur     : app_user
+  Fichier log     : install_mariadb.log
+=============================================
+```
 #### test 2 - relecture du journal
 
 `cat install_mariadb.log`
+
+**Resultat des tests**
+
+```
+achav@debian:~$ cat install_mariadb.log
+=============================================
+ Début de l'installation — 2026-06-19 13:55:56
+=============================================
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Atteint : 1 http://deb.debian.org/debian trixie InRelease
+Atteint : 2 http://security.debian.org/debian-security trixie-security InRelease
+Atteint : 3 http://deb.debian.org/debian trixie-updates InRelease
+Lecture des listes de paquets…
+Construction de l'arbre des dépendances…
+Lecture des informations d'état…
+Tous les paquets sont à jour.
+[2026-06-19 13:56:09] [OK]     Mise à jour de la liste des paquets réussie
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Lecture des listes de paquets…
+Construction de l'arbre des dépendances…
+Lecture des informations d'état…
+Installation de :
+  mariadb-server
+
+Installation de dépendances :
+  galera-4                 libterm-readkey-perl
+  gawk                     liburing2
+  libaio1t64               mariadb-client
+  libcgi-fast-perl         mariadb-client-core
+  libcgi-pm-perl           mariadb-common
+  libconfig-inifiles-perl  mariadb-plugin-provider-bzip2
+  libdbd-mariadb-perl      mariadb-plugin-provider-lz4
+  libdbi-perl              mariadb-plugin-provider-lzma
+  libfcgi-bin              mariadb-plugin-provider-lzo
+  libfcgi-perl             mariadb-plugin-provider-snappy
+  libfcgi0t64              mariadb-server-core
+  libhtml-template-perl    mysql-common
+  libmariadb3              pv
+  libpcre2-posix3          rsync
+  libsigsegv2              socat
+
+Paquets suggérés :
+  gawk-doc               libipc-sharedcache-perl  doc-base
+  libmldbm-perl          mailx                    python3-braceexpand
+  libnet-daemon-perl     mariadb-test
+  libsql-statement-perl  netcat-openbsd
+
+Sommaire :
+  Mise à niveau de : 0. Installation de : 31Supprimé : 0. Non mis à jour : 0
+Taille du téléchargement : 20.4 MB
+  Espace nécessaire : 201 MB / 13.5 GB disponible
+
+Réception de : 1 http://security.debian.org/debian-security trixie-security/main amd64 libdbi-perl amd64 1.647-1+deb13u1 [861 kB]
+Réception de : 2 http://deb.debian.org/debian trixie/main amd64 galera-4 amd64 26.4.23-0+deb13u1 [916 kB]
+Réception de : 3 http://deb.debian.org/debian trixie/main amd64 libsigsegv2 amd64 2.14-1+b2 [34.4 kB]
+Réception de : 4 http://deb.debian.org/debian trixie/main amd64 gawk amd64 1:5.2.1-2+b1 [674 kB]
+Réception de : 5 http://security.debian.org/debian-security trixie-security/main amd64 rsync amd64 3.4.1+ds1-5+deb13u3 [433 kB]
+Réception de : 6 http://deb.debian.org/debian trixie/main amd64 mysql-common all 5.8+1.1.1 [6’784 B]
+Réception de : 7 http://deb.debian.org/debian trixie/main amd64 mariadb-common all 1:11.8.6-0+deb13u1 [29.5 kB]
+Réception de : 8 http://deb.debian.org/debian trixie/main amd64 libconfig-inifiles-perl all 3.000003-3 [44.8 kB]
+Réception de : 9 http://deb.debian.org/debian trixie/main amd64 libmariadb3 amd64 1:11.8.6-0+deb13u1 [187 kB]
+Réception de : 10 http://deb.debian.org/debian trixie/main amd64 mariadb-client-core amd64 1:11.8.6-0+deb13u1 [919 kB]
+Réception de : 11 http://deb.debian.org/debian trixie/main amd64 libpcre2-posix3 amd64 10.46-1~deb13u1 [63.9 kB]
+Réception de : 12 http://deb.debian.org/debian trixie/main amd64 mariadb-client amd64 1:11.8.6-0+deb13u1 [3’164 kB]
+Réception de : 13 http://deb.debian.org/debian trixie/main amd64 libaio1t64 amd64 0.3.113-8+b1 [14.9 kB]
+Réception de : 14 http://deb.debian.org/debian trixie/main amd64 liburing2 amd64 2.9-1 [26.4 kB]
+Réception de : 15 http://deb.debian.org/debian trixie/main amd64 mariadb-server-core amd64 1:11.8.6-0+deb13u1 [7’933 kB]
+Réception de : 16 http://deb.debian.org/debian trixie/main amd64 socat amd64 1.8.0.3-1 [423 kB]
+Réception de : 17 http://deb.debian.org/debian trixie/main amd64 mariadb-server amd64 1:11.8.6-0+deb13u1 [3’907 kB]
+Réception de : 18 http://deb.debian.org/debian trixie/main amd64 libcgi-pm-perl all 4.68-1 [217 kB]
+Réception de : 19 http://deb.debian.org/debian trixie/main amd64 libfcgi0t64 amd64 2.4.5-0.1 [25.4 kB]
+Réception de : 20 http://deb.debian.org/debian trixie/main amd64 libfcgi-perl amd64 0.82+ds-3+b2 [25.3 kB]
+Réception de : 21 http://deb.debian.org/debian trixie/main amd64 libcgi-fast-perl all 1:2.17-1 [11.8 kB]
+Réception de : 22 http://deb.debian.org/debian trixie/main amd64 libdbd-mariadb-perl amd64 1.22-1+b4 [93.6 kB]
+Réception de : 23 http://deb.debian.org/debian trixie/main amd64 libfcgi-bin amd64 2.4.5-0.1 [12.4 kB]
+Réception de : 24 http://deb.debian.org/debian trixie/main amd64 libhtml-template-perl all 2.97-2 [66.5 kB]
+Réception de : 25 http://deb.debian.org/debian trixie/main amd64 libterm-readkey-perl amd64 2.38-2+b4 [24.6 kB]
+Réception de : 26 http://deb.debian.org/debian trixie/main amd64 mariadb-plugin-provider-bzip2 amd64 1:11.8.6-0+deb13u1 [30.1 kB]
+Réception de : 27 http://deb.debian.org/debian trixie/main amd64 mariadb-plugin-provider-lz4 amd64 1:11.8.6-0+deb13u1 [30.0 kB]
+Réception de : 28 http://deb.debian.org/debian trixie/main amd64 mariadb-plugin-provider-lzma amd64 1:11.8.6-0+deb13u1 [30.0 kB]
+Réception de : 29 http://deb.debian.org/debian trixie/main amd64 mariadb-plugin-provider-lzo amd64 1:11.8.6-0+deb13u1 [30.0 kB]
+Réception de : 30 http://deb.debian.org/debian trixie/main amd64 mariadb-plugin-provider-snappy amd64 1:11.8.6-0+deb13u1 [30.0 kB]
+Réception de : 31 http://deb.debian.org/debian trixie/main amd64 pv amd64 1.9.31-1 [106 kB]
+Préconfiguration des paquets...
+20.4 Mo réceptionnés en 15s (1’397 ko/s)
+Sélection du paquet galera-4 précédemment désélectionné.
+(Lecture de la base de données... 139393 fichiers et répertoires déjà installés.)
+Préparation du dépaquetage de .../galera-4_26.4.23-0+deb13u1_amd64.deb ...
+Dépaquetage de galera-4 (26.4.23-0+deb13u1) ...
+Sélection du paquet libsigsegv2:amd64 précédemment désélectionné.
+Préparation du dépaquetage de .../libsigsegv2_2.14-1+b2_amd64.deb ...
+Dépaquetage de libsigsegv2:amd64 (2.14-1+b2) ...
+Paramétrage de libsigsegv2:amd64 (2.14-1+b2) ...
+Sélection du paquet gawk précédemment désélectionné.
+(Lecture de la base de données... 139412 fichiers et répertoires déjà installés.)
+Préparation du dépaquetage de .../00-gawk_1%3a5.2.1-2+b1_amd64.deb ...
+Dépaquetage de gawk (1:5.2.1-2+b1) ...
+Sélection du paquet mysql-common précédemment désélectionné.
+Préparation du dépaquetage de .../01-mysql-common_5.8+1.1.1_all.deb ...
+Dépaquetage de mysql-common (5.8+1.1.1) ...
+Sélection du paquet mariadb-common précédemment désélectionné.
+Préparation du dépaquetage de .../02-mariadb-common_1%3a11.8.6-0+deb13u1_all.deb ...
+Dépaquetage de mariadb-common (1:11.8.6-0+deb13u1) ...
+Sélection du paquet libdbi-perl:amd64 précédemment désélectionné.
+Préparation du dépaquetage de .../03-libdbi-perl_1.647-1+deb13u1_amd64.deb ...
+Dépaquetage de libdbi-perl:amd64 (1.647-1+deb13u1) ...
+Sélection du paquet libconfig-inifiles-perl précédemment désélectionné.
+Préparation du dépaquetage de .../04-libconfig-inifiles-perl_3.000003-3_all.deb ...
+Dépaquetage de libconfig-inifiles-perl (3.000003-3) ...
+Sélection du paquet libmariadb3:amd64 précédemment désélectionné.
+Préparation du dépaquetage de .../05-libmariadb3_1%3a11.8.6-0+deb13u1_amd64.deb ...
+Dépaquetage de libmariadb3:amd64 (1:11.8.6-0+deb13u1) ...
+Sélection du paquet mariadb-client-core précédemment désélectionné.
+Préparation du dépaquetage de .../06-mariadb-client-core_1%3a11.8.6-0+deb13u1_amd64.deb ...
+Dépaquetage de mariadb-client-core (1:11.8.6-0+deb13u1) ...
+Sélection du paquet libpcre2-posix3:amd64 précédemment désélectionné.
+Préparation du dépaquetage de .../07-libpcre2-posix3_10.46-1~deb13u1_amd64.deb ...
+Dépaquetage de libpcre2-posix3:amd64 (10.46-1~deb13u1) ...
+Sélection du paquet mariadb-client précédemment désélectionné.
+Préparation du dépaquetage de .../08-mariadb-client_1%3a11.8.6-0+deb13u1_amd64.deb ...
+Dépaquetage de mariadb-client (1:11.8.6-0+deb13u1) ...
+Sélection du paquet libaio1t64:amd64 précédemment désélectionné.
+Préparation du dépaquetage de .../09-libaio1t64_0.3.113-8+b1_amd64.deb ...
+Dépaquetage de libaio1t64:amd64 (0.3.113-8+b1) ...
+Sélection du paquet liburing2:amd64 précédemment désélectionné.
+Préparation du dépaquetage de .../10-liburing2_2.9-1_amd64.deb ...
+Dépaquetage de liburing2:amd64 (2.9-1) ...
+Sélection du paquet mariadb-server-core précédemment désélectionné.
+Préparation du dépaquetage de .../11-mariadb-server-core_1%3a11.8.6-0+deb13u1_amd64.deb ...
+Dépaquetage de mariadb-server-core (1:11.8.6-0+deb13u1) ...
+Sélection du paquet rsync précédemment désélectionné.
+Préparation du dépaquetage de .../12-rsync_3.4.1+ds1-5+deb13u3_amd64.deb ...
+Dépaquetage de rsync (3.4.1+ds1-5+deb13u3) ...
+Sélection du paquet socat précédemment désélectionné.
+Préparation du dépaquetage de .../13-socat_1.8.0.3-1_amd64.deb ...
+Dépaquetage de socat (1.8.0.3-1) ...
+Paramétrage de mysql-common (5.8+1.1.1) ...
+update-alternatives: utilisation de « /etc/mysql/my.cnf.fallback » pour fournir « /etc/mysql/my.cnf » (my.cnf) en mode automatique
+Paramétrage de mariadb-common (1:11.8.6-0+deb13u1) ...
+update-alternatives: utilisation de « /etc/mysql/mariadb.cnf » pour fournir « /etc/mysql/my.cnf » (my.cnf) en mode automatique
+Sélection du paquet mariadb-server précédemment désélectionné.
+(Lecture de la base de données... 140091 fichiers et répertoires déjà installés.)
+Préparation du dépaquetage de .../00-mariadb-server_1%3a11.8.6-0+deb13u1_amd64.deb ...
+Dépaquetage de mariadb-server (1:11.8.6-0+deb13u1) ...
+Sélection du paquet libcgi-pm-perl précédemment désélectionné.
+Préparation du dépaquetage de .../01-libcgi-pm-perl_4.68-1_all.deb ...
+Dépaquetage de libcgi-pm-perl (4.68-1) ...
+Sélection du paquet libfcgi0t64:amd64 précédemment désélectionné.
+Préparation du dépaquetage de .../02-libfcgi0t64_2.4.5-0.1_amd64.deb ...
+Dépaquetage de libfcgi0t64:amd64 (2.4.5-0.1) ...
+Sélection du paquet libfcgi-perl précédemment désélectionné.
+Préparation du dépaquetage de .../03-libfcgi-perl_0.82+ds-3+b2_amd64.deb ...
+Dépaquetage de libfcgi-perl (0.82+ds-3+b2) ...
+Sélection du paquet libcgi-fast-perl précédemment désélectionné.
+Préparation du dépaquetage de .../04-libcgi-fast-perl_1%3a2.17-1_all.deb ...
+Dépaquetage de libcgi-fast-perl (1:2.17-1) ...
+Sélection du paquet libdbd-mariadb-perl précédemment désélectionné.
+Préparation du dépaquetage de .../05-libdbd-mariadb-perl_1.22-1+b4_amd64.deb ...
+Dépaquetage de libdbd-mariadb-perl (1.22-1+b4) ...
+Sélection du paquet libfcgi-bin précédemment désélectionné.
+Préparation du dépaquetage de .../06-libfcgi-bin_2.4.5-0.1_amd64.deb ...
+Dépaquetage de libfcgi-bin (2.4.5-0.1) ...
+Sélection du paquet libhtml-template-perl précédemment désélectionné.
+Préparation du dépaquetage de .../07-libhtml-template-perl_2.97-2_all.deb ...
+Dépaquetage de libhtml-template-perl (2.97-2) ...
+Sélection du paquet libterm-readkey-perl précédemment désélectionné.
+Préparation du dépaquetage de .../08-libterm-readkey-perl_2.38-2+b4_amd64.deb ...
+Dépaquetage de libterm-readkey-perl (2.38-2+b4) ...
+Sélection du paquet mariadb-plugin-provider-bzip2 précédemment désélectionné.
+Préparation du dépaquetage de .../09-mariadb-plugin-provider-bzip2_1%3a11.8.6-0+deb13u1_amd64.deb ...
+Dépaquetage de mariadb-plugin-provider-bzip2 (1:11.8.6-0+deb13u1) ...
+Sélection du paquet mariadb-plugin-provider-lz4 précédemment désélectionné.
+Préparation du dépaquetage de .../10-mariadb-plugin-provider-lz4_1%3a11.8.6-0+deb13u1_amd64.deb ...
+Dépaquetage de mariadb-plugin-provider-lz4 (1:11.8.6-0+deb13u1) ...
+Sélection du paquet mariadb-plugin-provider-lzma précédemment désélectionné.
+Préparation du dépaquetage de .../11-mariadb-plugin-provider-lzma_1%3a11.8.6-0+deb13u1_amd64.deb ...
+Dépaquetage de mariadb-plugin-provider-lzma (1:11.8.6-0+deb13u1) ...
+Sélection du paquet mariadb-plugin-provider-lzo précédemment désélectionné.
+Préparation du dépaquetage de .../12-mariadb-plugin-provider-lzo_1%3a11.8.6-0+deb13u1_amd64.deb ...
+Dépaquetage de mariadb-plugin-provider-lzo (1:11.8.6-0+deb13u1) ...
+Sélection du paquet mariadb-plugin-provider-snappy précédemment désélectionné.
+Préparation du dépaquetage de .../13-mariadb-plugin-provider-snappy_1%3a11.8.6-0+deb13u1_amd64.deb ...
+Dépaquetage de mariadb-plugin-provider-snappy (1:11.8.6-0+deb13u1) ...
+Sélection du paquet pv précédemment désélectionné.
+Préparation du dépaquetage de .../14-pv_1.9.31-1_amd64.deb ...
+Dépaquetage de pv (1.9.31-1) ...
+Paramétrage de libconfig-inifiles-perl (3.000003-3) ...
+Paramétrage de galera-4 (26.4.23-0+deb13u1) ...
+Paramétrage de gawk (1:5.2.1-2+b1) ...
+Paramétrage de libfcgi0t64:amd64 (2.4.5-0.1) ...
+Paramétrage de libcgi-pm-perl (4.68-1) ...
+Paramétrage de libfcgi-bin (2.4.5-0.1) ...
+Paramétrage de libhtml-template-perl (2.97-2) ...
+Paramétrage de socat (1.8.0.3-1) ...
+Paramétrage de libmariadb3:amd64 (1:11.8.6-0+deb13u1) ...
+Paramétrage de libpcre2-posix3:amd64 (10.46-1~deb13u1) ...
+Paramétrage de libaio1t64:amd64 (0.3.113-8+b1) ...
+Paramétrage de pv (1.9.31-1) ...
+Paramétrage de libfcgi-perl (0.82+ds-3+b2) ...
+Paramétrage de libterm-readkey-perl (2.38-2+b4) ...
+Paramétrage de liburing2:amd64 (2.9-1) ...
+Paramétrage de libdbi-perl:amd64 (1.647-1+deb13u1) ...
+Paramétrage de rsync (3.4.1+ds1-5+deb13u3) ...
+rsync.service is a disabled or a static unit, not starting it.
+Paramétrage de libcgi-fast-perl (1:2.17-1) ...
+Paramétrage de mariadb-client-core (1:11.8.6-0+deb13u1) ...
+Paramétrage de libdbd-mariadb-perl (1.22-1+b4) ...
+Paramétrage de mariadb-server-core (1:11.8.6-0+deb13u1) ...
+Paramétrage de mariadb-client (1:11.8.6-0+deb13u1) ...
+Paramétrage de mariadb-plugin-provider-lz4 (1:11.8.6-0+deb13u1) ...
+Paramétrage de mariadb-plugin-provider-snappy (1:11.8.6-0+deb13u1) ...
+Paramétrage de mariadb-server (1:11.8.6-0+deb13u1) ...
+Created symlink '/etc/systemd/system/multi-user.target.wants/mariadb.service' → '/usr/lib/systemd/system/mariadb.service'.
+Paramétrage de mariadb-plugin-provider-bzip2 (1:11.8.6-0+deb13u1) ...
+Paramétrage de mariadb-plugin-provider-lzma (1:11.8.6-0+deb13u1) ...
+Paramétrage de mariadb-plugin-provider-lzo (1:11.8.6-0+deb13u1) ...
+Traitement des actions différées (« triggers ») pour man-db (2.13.1-1) ...
+Traitement des actions différées (« triggers ») pour libc-bin (2.41-12+deb13u3) ...
+Traitement des actions différées (« triggers ») pour mariadb-server (1:11.8.6-0+deb13u1) ...
+[2026-06-19 13:56:40] [OK]     Installation de MariaDB réussie
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Lecture des listes de paquets…
+Construction de l'arbre des dépendances…
+Lecture des informations d'état…
+Calcul de la mise à jour…
+Sommaire :
+  Mise à niveau de : 0. Installation de : 0Supprimé : 0. Non mis à jour : 0
+[2026-06-19 13:56:41] [OK]     Mise à jour des dépendances réussie
+[2026-06-19 13:56:41] [OK]     Service MariaDB démarré
+Synchronizing state of mariadb.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.
+Executing: /usr/lib/systemd/systemd-sysv-install enable mariadb
+[2026-06-19 13:56:42] [OK]     MariaDB activé au démarrage du système
+[2026-06-19 13:56:42] [OK]     Sécurisation réussie : mot de passe root défini, utilisateurs anonymes supprimés, connexion root distante désactivée, base test supprimée, privilèges rechargés
+[2026-06-19 13:56:42] [OK]     Base de données 'app_interne' créée
+[2026-06-19 13:56:42] [OK]     Utilisateur 'app_user' créé
+[2026-06-19 13:56:42] [OK]     Droits accordés à 'app_user' sur la base 'app_interne' — Privilèges rechargés
+[2026-06-19 13:56:44] [OK]     Service MariaDB redémarré
+=============================================
+ Installation terminée — 2026-06-19 13:56:44
+=============================================
+```
 
 #### test 3 - MariaDB est installé
 
 `mariadb --version`
 
+**Resultat des tests**
+
+```
+achav@debian:~$ mariadb --version
+mariadb from 11.8.6-MariaDB, client 15.2 for debian-linux-gnu (x86_64) using  EditLine wrapper
+```
 #### test 4 - Le service fonctionne
 
 `systemctl status mariadb`
+
+**Resultat des tests**
+
+```
+achav@debian:~$ systemctl status mariadb
+● mariadb.service - MariaDB 11.8.6 database server
+     Loaded: loaded (/usr/lib/systemd/system/mariadb.service; e>
+     Active: active (running) since Fri 2026-06-19 13:56:44 CES>
+ Invocation: 908bfa22d40f42819bc51e9da243b220
+       Docs: man:mariadbd(8)
+             https://mariadb.com/kb/en/library/systemd/
+    Process: 6020 ExecStartPre=/bin/sh -c [ ! -e /usr/bin/galer>
+    Process: 6087 ExecStartPost=/bin/rm -f /run/mysqld/wsrep-st>
+    Process: 6089 ExecStartPost=/etc/mysql/debian-start (code=e>
+   Main PID: 6074 (mariadbd)
+     Status: "Taking your SQL requests now..."
+      Tasks: 10 (limit: 30483)
+     Memory: 123.2M (peak: 128.3M)
+        CPU: 815ms
+     CGroup: /system.slice/mariadb.service
+             └─6074 /usr/sbin/mariadbd
+```
 
 #### test 5 - la base de donnée existe
 
 `mariadb -u root -p -e "SHOW DATABASES;"`
 
+**Resultat des tests**
+
+```
+achav@debian:~$ mariadb -u root -p -e "SHOW DATABASES;"
+Enter password:
++--------------------+
+| Database           |
++--------------------+
+| app_interne        |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+```
 #### test 6 - l'utilisateur existe
 
 `mariadb -u root -p -e "SELECT User, Host FROM mysql.user;"`
+
+**Resultat des tests**
+```
+achav@debian:~$ mariadb -u root -p -e "SELECT User, Host FROM mysql.user;"
+Enter password:
++-------------+-----------+
+| User        | Host      |
++-------------+-----------+
+| app_user    | localhost |
+| mariadb.sys | localhost |
+| mysql       | localhost |
+| root        | localhost |
++-------------+-----------+
+```
+
 <!-- Décrire :
 
 les tests réalisés ;
@@ -704,6 +1078,10 @@ le contenu du log. -->
 
 Ce projet démontre l’intérêt de l’automatisation dans l’administration système. Grâce au script développé, l’installation et la sécurisation de MariaDB peuvent être réalisées rapidement, de manière reproductible et sans intervention manuelle. La journalisation intégrée facilite le suivi des opérations et le dépannage en cas d’erreur. Cette solution permet ainsi de gagner du temps, de réduire les risques d’oubli lors de la configuration et d’assurer une meilleure cohérence entre les différents serveurs.
 
+J'ai pu rapidement scripter le projet grâce à mon pseudo code, qui était limpide. Cela aide beaucoup à poser le cadre y compris lorsqu'on travaille avec une IA.
+
+J'ai appris à utiliser des commandes sous forme de script que je n'exécutais jusque-la que séparément.
+
 <!-- Répondre :
 
 Qu’est-ce qui a bien fonctionné ?
@@ -716,4 +1094,12 @@ Que ferais-tu différemment la prochaine fois ? -->
 
 ## 8. Conclusion
 
-Ce projet m'a énormément apporté dans le cadre du module. En effet, je connaissais la plupart des commandes nécessaires à effectuer 
+Ce projet m'a énormément apporté dans le cadre du module. En effet, je connaissais la plupart des commandes nécessaires à effectuer, mais je n'avais pas encore scripté en bash.
+
+En effet, mon entreprise formatrice utilisant beaucoup plus Powershell, c'est ce langage que j'ai choisi en priorité dans ce cours.
+
+Je me rends compte que la logique reste totalement la même, seul le nom des commandes changent. Aussi, je n'ai pas été dépaysé durant la réalisation de ce projet.
+
+Je compte bien utiliser ces nouvelles connaissances dans mon infrastructure personnelle. J'ai Proxmox comme hyperviseur (dérivé de Debian) et plusieurs VM et LXC sous Linux.
+
+Un de mes prochains projet sera de créer un script pour installer Docker sur Debian. En effet, il faut effectuer plusieurs tâches en amont de l'installation et celle-ci conviennent parfaitement pour un script (ajouter le gestionnaire de paquet Docker, chercher et installer les dépendances, ...)
